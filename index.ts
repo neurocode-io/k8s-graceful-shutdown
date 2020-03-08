@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { IncomingMessage, ServerResponse } from 'http'
 
 interface HealthHandlerOptions {
@@ -46,13 +47,13 @@ const removeGracefulShutdownHook = (gracefulShutdownCB: (...args: any[]) => void
 
 const getHealthzHandler = (options: HealthHandlerOptions) => {
   if (!options.test) {
-    options.test = (req: IncomingMessage, res: ServerResponse) => {
+    options.test = (_req: IncomingMessage, _res: ServerResponse) => {
       return true
     }
   }
   signals.forEach(signal => {
     process.on(signal, () => {
-      options.test = (req: IncomingMessage, res: ServerResponse) => {
+      options.test = (_req: IncomingMessage, _res: ServerResponse) => {
         return false
       }
     })
