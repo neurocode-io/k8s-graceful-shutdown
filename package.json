@@ -4,10 +4,30 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha --config test/mocharc.yaml test/**/*.test.ts",
+    "clean": "rm -rf dist/*",
     "prepush": "npm run lint",
     "lint": "eslint ./ -c .eslintrc.js --ext ts --cache --max-warnings 0",
-    "lint:fix": "eslint ./ -c .eslintrc.js --ext ts  --cache --fix"
+    "lint:fix": "eslint ./ -c .eslintrc.js --ext ts  --cache --fix",
+    "pretest": "npx tsc",
+    "test": "mocha --config test/mocharc.yaml test/**/*.test.ts",
+    "test:coverage": "nyc --reporter=lcov --reporter=text npm test"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "**/*.js",
+      "**/*.json",
+      "coverage/",
+      "test/",
+      "**/index.ts"
+    ],
+    "reporter": [
+      "html"
+    ],
+    "all": true
   },
   "devDependencies": {
     "@types/node": "^12.12.7",
@@ -24,7 +44,8 @@
     "mocha": "^6.2.2",
     "chai": "^4.2.0",
     "@types/sinon": "^7.5.0",
-    "ts-node-dev": "^1.0.0-pre.44"
+    "ts-node-dev": "^1.0.0-pre.44",
+    "nyc": "^15.0.0-beta.0"
   },
   "husky": {
     "hooks": {

@@ -49,6 +49,16 @@ describe('get healthz handler', () => {
     })
     healthzCheck(req, res)
     assert.equal(health, 'not OK')
+
+    healthzCheck = getHealthzHandler({
+      healthy: healthyCB,
+      notHealthy: notHealthyCB,
+      test: () => {
+        throw new Error('error occured')
+      },
+    })
+    healthzCheck(req, res)
+    assert.equal(health, 'not OK')
   })
 })
 
@@ -109,6 +119,18 @@ describe('remove graceful shutdown hooks', () => {
       })
 
       process.kill(process.pid, signal)
+    })
+  })
+
+  it('removeGracefulShutdownHook should not throw when an unknown callback is provided', () => {
+    assert.doesNotThrow(() => {
+      removeGracefulShutdownHook(testCallback)
+    })
+
+    assert.doesNotThrow(() => {
+      removeGracefulShutdownHook(() => {
+        new Error('should not throw')
+      })
     })
   })
 })
