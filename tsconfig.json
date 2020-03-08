@@ -11,6 +11,7 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "sourceMap": true,
     "noImplicitAny": true
   },
   "include": ["lib/k8s-graceful-shutdown.ts", "test/**/*"],
