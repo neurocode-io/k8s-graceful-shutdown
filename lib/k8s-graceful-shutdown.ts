@@ -3,8 +3,8 @@ import { IncomingMessage, ServerResponse } from 'http'
 interface HealthHandlerOptions {
   /**
    * Health test callback
-   * Returns true if test passed
-   * Retuns false if test failed
+   * Returns true if test passes
+   * Retuns false if test failes
    */
   test?: (req: IncomingMessage, res: ServerResponse) => boolean
   /**
