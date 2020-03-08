@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { IncomingMessage, ServerResponse } from 'http'
 
 interface HealthHandlerOptions {
@@ -17,6 +16,8 @@ interface HealthHandlerOptions {
    */
   notHealthy: (req: IncomingMessage, res: ServerResponse) => void
 }
+
+const defaultTest = () => true
 
 const hooks = new Map<(...args: any[]) => void, (...args: any[]) => void>()
 const signals = ['SIGINT', 'SIGTERM', 'SIGUSR2'] as const
@@ -39,30 +40,22 @@ const removeGracefulShutdownHook = (gracefulShutdownCB: (...args: any[]) => void
     const gracefulShutdownHook = hooks.get(gracefulShutdownCB)
     hooks.delete(gracefulShutdownCB)
     signals.forEach(signal => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      process.removeListener(signal, gracefulShutdownHook!)
+      process.removeListener(signal, gracefulShutdownHook)
     })
   }
 }
 
 const getHealthzHandler = (options: HealthHandlerOptions) => {
-  if (!options.test) {
-    options.test = (_req: IncomingMessage, _res: ServerResponse) => {
-      return true
-    }
-  }
   signals.forEach(signal => {
     process.on(signal, () => {
-      options.test = (_req: IncomingMessage, _res: ServerResponse) => {
-        return false
-      }
+      options.test = () => false
     })
   })
 
   return (req: IncomingMessage, res: ServerResponse) => {
+    options.test = options.test ?? defaultTest
     try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      if (options.test!(req, res)) {
+      if (options.test(req, res)) {
         options.healthy(req, res)
       } else {
         options.notHealthy(req, res)
