@@ -129,7 +129,7 @@ describe('remove graceful shutdown hooks', () => {
 
     assert.doesNotThrow(() => {
       removeGracefulShutdownHook(() => {
-        new Error('should not throw')
+        throw new Error('should not throw')
       })
     })
   })
