@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "target": "es5",
+    "lib": ["es2015"],
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true
+  },
+  "include": ["./index.ts", "test/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
