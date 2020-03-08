@@ -13,6 +13,6 @@
     "esModuleInterop": true,
     "noImplicitAny": true
   },
-  "include": ["./index.ts", "test/**/*"],
+  "include": ["lib/k8s-graceful-shutdown.ts", "test/**/*"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { addGracefulShutdownHook, removeGracefulShutdownHook, getHealthzHandler } from '../index'
+import { addGracefulShutdownHook, removeGracefulShutdownHook, getHealthzHandler } from '../lib/k8s-graceful-shutdown'
 import { setTimeout } from 'timers'
 import { IncomingMessage, ServerResponse } from 'http'
 import { Socket } from 'net'
@@ -86,7 +86,7 @@ describe('exit signals test', async () => {
           healthzCheck(req, res)
           assert.equal(health, 'not OK')
           done()
-        }, 50)
+        }, 100)
       })
 
       process.kill(process.pid, signal)
@@ -105,7 +105,7 @@ describe('remove graceful shutdown hooks', () => {
         setTimeout(() => {
           assert.equal(callbackCalled, false)
           done()
-        }, 50)
+        }, 100)
       })
 
       process.kill(process.pid, signal)
