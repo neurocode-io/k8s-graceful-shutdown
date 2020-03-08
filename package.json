@@ -11,7 +11,7 @@
     "pretest": "npx tsc",
     "test": "mocha --config test/mocharc.yaml test/**/*.test.ts",
     "test:coverage": "nyc --reporter=lcov --reporter=text npm test",
-    "test:coverage:ci": "nyc --reporter=json > coverage/coverage.json"
+    "test:coverage:ci": "nyc --reporter=json npm test"
   },
   "nyc": {
     "extension": [
