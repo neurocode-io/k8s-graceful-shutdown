@@ -104,7 +104,7 @@ describe('exit signals test', async () => {
   })
 })
 
-describe('remove graceful shutdown hooks', () => {
+describe('remove graceful shutdown hooks', async () => {
   process.once('beforeExit', () => {
     process.stdin.resume()
   })
