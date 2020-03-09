@@ -81,6 +81,7 @@ describe('exit signals test', async () => {
   signals.forEach(signal => {
     it(`it should add graceful shutdown hook on exit signal: ${signal}`, done => {
       process.once('beforeExit', () => {
+        console.log('in before exit: ' + signal)
         process.stdin.resume()
       })
 
@@ -96,6 +97,7 @@ describe('exit signals test', async () => {
 
       process.once(signal, () => {
         setTimeout(() => {
+          console.log('in gracefulshutdown: ' + signal)
           assert.equal(callbackCalled, true)
           healthzCheck(req, res)
           assert.equal(health, 'not OK')
