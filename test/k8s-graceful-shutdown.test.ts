@@ -96,6 +96,7 @@ describe('exit signals test', async () => {
       assert.equal(health, 'OK')
 
       process.once(signal, () => {
+        console.log('in before gracefulshutdown: ' + signal)
         setTimeout(() => {
           console.log('in gracefulshutdown: ' + signal)
           assert.equal(callbackCalled, true)
@@ -111,18 +112,20 @@ describe('exit signals test', async () => {
 })
 
 describe('remove graceful shutdown hooks', async () => {
-  process.once('beforeExit', () => {
-    process.stdin.resume()
-  })
-
   before(() => {
     removeGracefulShutdownHook(testCallback)
   })
 
   signals.forEach(signal => {
     it(`it should remove graceful shutdown hook on exit signal: ${signal}`, done => {
+      process.once('beforeExit', () => {
+        console.log('in before exit: ' + signal)
+        process.stdin.resume()
+      })
       process.once(signal, () => {
+        console.log('in before gracefulshutdown: ' + signal)
         setTimeout(() => {
+          console.log('in gracefulshutdown: ' + signal)
           assert.equal(callbackCalled, false)
           done()
         }, 100)
