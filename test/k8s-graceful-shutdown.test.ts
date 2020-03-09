@@ -63,10 +63,6 @@ describe('get healthz handler', () => {
 })
 
 describe('exit signals test', async () => {
-  process.once('beforeExit', () => {
-    process.stdin.resume()
-  })
-
   before(() => {
     signals.forEach(signal => {
       process.removeAllListeners(signal)
@@ -84,6 +80,10 @@ describe('exit signals test', async () => {
 
   signals.forEach(signal => {
     it(`it should add graceful shutdown hook on exit signal: ${signal}`, done => {
+      process.once('beforeExit', () => {
+        process.stdin.resume()
+      })
+
       healthzCheck = getHealthzHandler({
         healthy: healthyCB,
         notHealthy: notHealthyCB,
