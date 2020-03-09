@@ -4,7 +4,7 @@ import { setTimeout } from 'timers'
 import { IncomingMessage, ServerResponse } from 'http'
 import { Socket } from 'net'
 
-const signals = [/*'SIGINT', 'SIGTERM',*/ 'SIGUSR2'] as const
+const signals = ['SIGINT', /*'SIGTERM',*/ 'SIGUSR2'] as const
 let callbackCalled: boolean
 let health: string
 let healthzCheck: (req: IncomingMessage, res: ServerResponse) => void
