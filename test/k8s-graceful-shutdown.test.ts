@@ -3,8 +3,9 @@ import { addGracefulShutdownHook, removeGracefulShutdownHook, getHealthzHandler 
 import { setTimeout } from 'timers'
 import { IncomingMessage, ServerResponse } from 'http'
 import { Socket } from 'net'
+import { removeAllListeners } from 'process'
 
-const signals = ['SIGINT' /*'SIGTERM', 'SIGUSR2'*/] as const
+const signals = ['SIGINT', 'SIGTERM', 'SIGUSR2'] as const
 let callbackCalled: boolean
 let health: string
 let healthzCheck: (req: IncomingMessage, res: ServerResponse) => void
@@ -63,9 +64,13 @@ describe('get healthz handler', () => {
 })
 
 describe('exit signals test', async () => {
-  before(() => {
+  process.once('beforeExit', () => {
+    process.stdin.resume()
+  })
+
+  beforeEach(() => {
     signals.forEach(signal => {
-      process.removeAllListeners(signal)
+      removeAllListeners(signal)
     })
 
     addGracefulShutdownHook(0, testCallback)
@@ -80,11 +85,6 @@ describe('exit signals test', async () => {
 
   signals.forEach(signal => {
     it(`it should add graceful shutdown hook on exit signal: ${signal}`, done => {
-      process.once('beforeExit', () => {
-        console.log('in before exit: ' + signal)
-        process.stdin.resume()
-      })
-
       healthzCheck = getHealthzHandler({
         healthy: healthyCB,
         notHealthy: notHealthyCB,
@@ -96,9 +96,7 @@ describe('exit signals test', async () => {
       assert.equal(health, 'OK')
 
       process.once(signal, () => {
-        console.log('in before gracefulshutdown: ' + signal)
         setTimeout(() => {
-          console.log('in gracefulshutdown: ' + signal)
           assert.equal(callbackCalled, true)
           healthzCheck(req, res)
           assert.equal(health, 'not OK')
@@ -111,21 +109,15 @@ describe('exit signals test', async () => {
   })
 })
 
-describe('remove graceful shutdown hooks', async () => {
+describe('remove graceful shutdown hooks', () => {
   before(() => {
     removeGracefulShutdownHook(testCallback)
   })
 
   signals.forEach(signal => {
     it(`it should remove graceful shutdown hook on exit signal: ${signal}`, done => {
-      process.once('beforeExit', () => {
-        console.log('in before exit: ' + signal)
-        process.stdin.resume()
-      })
       process.once(signal, () => {
-        console.log('in before gracefulshutdown: ' + signal)
         setTimeout(() => {
-          console.log('in gracefulshutdown: ' + signal)
           assert.equal(callbackCalled, false)
           done()
         }, 100)
