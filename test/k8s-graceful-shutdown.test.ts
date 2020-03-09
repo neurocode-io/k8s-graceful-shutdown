@@ -4,7 +4,7 @@ import { setTimeout } from 'timers'
 import { IncomingMessage, ServerResponse } from 'http'
 import { Socket } from 'net'
 
-const signals = [/*'SIGINT', 'SIGTERM',*/ 'SIGUSR2'] as const
+const signals = ['SIGINT', 'SIGTERM', 'SIGUSR2'] as const
 let callbackCalled: boolean
 let health: string
 let healthzCheck: (req: IncomingMessage, res: ServerResponse) => void
@@ -105,6 +105,10 @@ describe('exit signals test', async () => {
 })
 
 describe('remove graceful shutdown hooks', () => {
+  process.once('beforeExit', () => {
+    process.stdin.resume()
+  })
+
   before(() => {
     removeGracefulShutdownHook(testCallback)
   })
@@ -127,10 +131,10 @@ describe('remove graceful shutdown hooks', () => {
       removeGracefulShutdownHook(testCallback)
     })
 
-    // assert.doesNotThrow(() => {
-    //   removeGracefulShutdownHook(() => {
-    //     throw new Error('should not throw')
-    //   })
-    // })
+    assert.doesNotThrow(() => {
+      removeGracefulShutdownHook(() => {
+        throw new Error('should not throw')
+      })
+    })
   })
 })
