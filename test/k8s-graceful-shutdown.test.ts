@@ -68,6 +68,10 @@ describe('exit signals test', async () => {
   })
 
   before(() => {
+    signals.forEach(signal => {
+      process.removeAllListeners(signal)
+    })
+
     addGracefulShutdownHook(0, testCallback)
     callbackCalled = false
     health = 'test'
