@@ -6,18 +6,19 @@ interface HealthHandlerOptions {
    * Returns true if test passes
    * Retuns false if test failes
    */
-  test?: (req: IncomingMessage, res: ServerResponse) => boolean
+  test?: () => boolean | Promise<boolean>
   /**
    * Callback to be triggered if healthy
    */
-  healthy: (req: IncomingMessage, res: ServerResponse) => void
+  healthy: (req: IncomingMessage, res: ServerResponse) => void | Promise<void>
   /**
    * Callback to be triggered if not heathy
    */
-  notHealthy: (req: IncomingMessage, res: ServerResponse) => void
+  notHealthy: (req: IncomingMessage, res: ServerResponse) => void | Promise<void>
 }
 
 const defaultTest = () => true
+
 const hooks = new Map<(...args: any[]) => void, (...args: any[]) => void>()
 const signals = ['SIGINT', 'SIGTERM', 'SIGUSR2'] as const
 /**
@@ -64,15 +65,9 @@ const getHealthzHandler = (options: HealthHandlerOptions) => {
 
   return (req: IncomingMessage, res: ServerResponse) => {
     options.test = options.test ?? defaultTest
-    try {
-      if (options.test(req, res)) {
-        options.healthy(req, res)
-      } else {
-        options.notHealthy(req, res)
-      }
-    } catch (e) {
-      options.notHealthy(req, res)
-    }
+    return Promise.resolve(options.test())
+      .then((result: boolean) => (result ? options.healthy(req, res) : options.notHealthy(req, res)))
+      .catch(() => options.notHealthy(req, res))
   }
 }
 

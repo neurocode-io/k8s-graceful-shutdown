@@ -1,8 +1,8 @@
 {
-  "name": "k8s-graceful-shutdown",
-  "version": "0.0.1",
-  "private": true,
-  "main": "dist/index.js",
+  "name": "@neurocode-io/k8s-graceful-shutdown",
+  "version": "0.1.0",
+  "main": "dist/lib/k8s-graceful-shutdown.js",
+  "types": "dist/lib/k8s-graceful-shutdown.d.ts",
   "scripts": {
     "clean": "rm -rf dist/*",
     "prepush": "npm run lint",
@@ -60,5 +60,30 @@
   },
   "files": [
     "dist/"
-  ]
+  ],
+  "description": "![CI](https://github.com/NeuroCode-io/k8s-graceful-shutdown/workflows/CI/badge.svg?branch=master) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=alert_status)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=coverage)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=security_rating)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown)",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NeuroCode-io/k8s-graceful-shutdown.git"
+  },
+  "keywords": [
+    "Graceful",
+    "shutdown",
+    "for",
+    "microservices",
+    "running",
+    "in",
+    "kubernetes"
+  ],
+  "author": "NeuroCode",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/NeuroCode-io/k8s-graceful-shutdown/issues"
+  },
+  "homepage": "https://github.com/NeuroCode-io/k8s-graceful-shutdown#readme"
 }
