@@ -7,7 +7,7 @@ import { Socket } from 'net'
 const signals = ['SIGINT', 'SIGTERM', 'SIGUSR2'] as const
 let callbackCalled: boolean
 let health: string
-let healthzCheck: (req: IncomingMessage, res: ServerResponse) => void
+let healthzCheck: (req: IncomingMessage, res: ServerResponse) => Promise<void>
 
 const testCallback = () => {
   callbackCalled = true
@@ -25,10 +25,12 @@ const req = new IncomingMessage(new Socket())
 const res = new ServerResponse(req)
 
 describe('get healthz handler', () => {
-  it('get healthz handler should return correct health check', () => {
+  it('get healthz handler should return correct health check', async () => {
     healthzCheck = getHealthzHandler({ healthy: healthyCB, notHealthy: notHealthyCB })
-    healthzCheck(req, res)
+    await healthzCheck(req, res)
     assert.equal(health, 'OK')
+
+    health = 'test'
 
     healthzCheck = getHealthzHandler({
       healthy: healthyCB,
@@ -37,8 +39,10 @@ describe('get healthz handler', () => {
         return true
       },
     })
-    healthzCheck(req, res)
+    await healthzCheck(req, res)
     assert.equal(health, 'OK')
+
+    health = 'test'
 
     healthzCheck = getHealthzHandler({
       healthy: healthyCB,
@@ -47,17 +51,7 @@ describe('get healthz handler', () => {
         return false
       },
     })
-    healthzCheck(req, res)
-    assert.equal(health, 'not OK')
-
-    healthzCheck = getHealthzHandler({
-      healthy: healthyCB,
-      notHealthy: notHealthyCB,
-      test: () => {
-        throw new Error('error occured')
-      },
-    })
-    healthzCheck(req, res)
+    await healthzCheck(req, res)
     assert.equal(health, 'not OK')
   })
 })
@@ -87,14 +81,16 @@ describe('exit signals test', async () => {
           return true
         },
       })
-      healthzCheck(req, res)
-      assert.equal(health, 'OK')
+      healthzCheck(req, res).then(() => {
+        assert.equal(health, 'OK')
+      })
 
       process.once(signal, () => {
         setTimeout(() => {
           assert.equal(callbackCalled, true)
-          healthzCheck(req, res)
-          assert.equal(health, 'not OK')
+          healthzCheck(req, res).then(() => {
+            assert.equal(health, 'not OK')
+          })
           done()
         }, 100)
       })
