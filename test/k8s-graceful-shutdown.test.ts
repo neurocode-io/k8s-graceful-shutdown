@@ -4,14 +4,13 @@ import { setTimeout } from 'timers'
 import { IncomingMessage, ServerResponse } from 'http'
 import { Socket } from 'net'
 
-const signals = ['SIGINT', 'SIGTERM', 'SIGUSR2'] as const
 let callbackCalled: boolean
 let health: string
 let healthzCheck: (req: IncomingMessage, res: ServerResponse) => Promise<void>
 
-const testCallback = () => {
-  callbackCalled = true
-}
+const signals = ['SIGINT', 'SIGTERM', 'SIGUSR2'] as const
+const req = new IncomingMessage(new Socket())
+const res = new ServerResponse(req)
 
 const healthyCB = () => {
   health = 'OK'
@@ -21,17 +20,22 @@ const notHealthyCB = () => {
   health = 'not OK'
 }
 
-const req = new IncomingMessage(new Socket())
-const res = new ServerResponse(req)
+const testCallback = () => {
+  callbackCalled = true
+}
 
 describe('get healthz handler', () => {
-  it('get healthz handler should return correct health check', async () => {
+  beforeEach(() => {
+    health = 'test'
+  })
+
+  it('health check should return healthy for no test', async () => {
     healthzCheck = getHealthzHandler({ healthy: healthyCB, notHealthy: notHealthyCB })
     await healthzCheck(req, res)
-    assert.equal(health, 'OK')
+    assert.strictEqual(health, 'OK')
+  })
 
-    health = 'test'
-
+  it('health check should return healthy for succeeding test', async () => {
     healthzCheck = getHealthzHandler({
       healthy: healthyCB,
       notHealthy: notHealthyCB,
@@ -40,8 +44,9 @@ describe('get healthz handler', () => {
       },
     })
     await healthzCheck(req, res)
-    assert.equal(health, 'OK')
-
+    assert.strictEqual(health, 'OK')
+  })
+  it('health check should return healthy failing test', async () => {
     health = 'test'
 
     healthzCheck = getHealthzHandler({
@@ -52,7 +57,7 @@ describe('get healthz handler', () => {
       },
     })
     await healthzCheck(req, res)
-    assert.equal(health, 'not OK')
+    assert.strictEqual(health, 'not OK')
   })
 })
 
@@ -82,14 +87,14 @@ describe('exit signals test', async () => {
         },
       })
       healthzCheck(req, res).then(() => {
-        assert.equal(health, 'OK')
+        assert.strictEqual(health, 'OK')
       })
 
       process.once(signal, () => {
         setTimeout(() => {
-          assert.equal(callbackCalled, true)
+          assert.strictEqual(callbackCalled, true)
           healthzCheck(req, res).then(() => {
-            assert.equal(health, 'not OK')
+            assert.strictEqual(health, 'not OK')
           })
           done()
         }, 100)
@@ -109,7 +114,7 @@ describe('remove graceful shutdown hooks', () => {
     it(`it should remove graceful shutdown hook on exit signal: ${signal}`, done => {
       process.once(signal, () => {
         setTimeout(() => {
-          assert.equal(callbackCalled, false)
+          assert.strictEqual(callbackCalled, false)
           done()
         }, 100)
       })
