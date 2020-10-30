@@ -77,8 +77,8 @@ describe('exit signals test', async () => {
     health = 'test'
   })
 
-  signals.forEach(signal => {
-    it(`it should add graceful shutdown hook on exit signal: ${signal}`, done => {
+  signals.forEach((signal) => {
+    it(`it should add graceful shutdown hook on exit signal: ${signal}`, (done) => {
       healthzCheck = getHealthzHandler({
         healthy: healthyCB,
         notHealthy: notHealthyCB,
@@ -110,8 +110,8 @@ describe('remove graceful shutdown hooks', () => {
     removeGracefulShutdownHook(testCallback)
   })
 
-  signals.forEach(signal => {
-    it(`it should remove graceful shutdown hook on exit signal: ${signal}`, done => {
+  signals.forEach((signal) => {
+    it(`it should remove graceful shutdown hook on exit signal: ${signal}`, (done) => {
       process.once(signal, () => {
         setTimeout(() => {
           assert.strictEqual(callbackCalled, false)

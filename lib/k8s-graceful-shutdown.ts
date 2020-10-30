@@ -33,7 +33,7 @@ const addGracefulShutdownHook = (gracefulPeriodMs: number, gracefulShutdownCB: (
   }
 
   hooks.set(gracefulShutdownCB, gracefulShutdownHook)
-  signals.forEach(signal => {
+  signals.forEach((signal) => {
     process.on(signal, gracefulShutdownHook)
   })
 }
@@ -45,7 +45,7 @@ const removeGracefulShutdownHook = (gracefulShutdownCB: (...args: any[]) => void
   if (!gracefuShutdownHook) return
 
   hooks.delete(gracefulShutdownCB)
-  signals.forEach(signal => {
+  signals.forEach((signal) => {
     process.removeListener(signal, gracefuShutdownHook)
   })
 }
@@ -57,7 +57,7 @@ const removeGracefulShutdownHook = (gracefulShutdownCB: (...args: any[]) => void
  * callback resolves to false, or an exit signal was received.
  */
 const getHealthzHandler = (options: HealthHandlerOptions) => {
-  signals.forEach(signal => {
+  signals.forEach((signal) => {
     process.on(signal, () => {
       options.test = () => false
     })
