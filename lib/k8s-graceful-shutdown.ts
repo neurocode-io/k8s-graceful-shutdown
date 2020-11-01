@@ -20,10 +20,10 @@ interface HealthHandlerOptions {
 const defaultTest = () => true
 
 const hooks = new Map<(...args: any[]) => void, (...args: any[]) => void>()
-const signals = ['SIGINT', 'SIGTERM', 'SIGUSR2'] as const
+const signals = ['SIGINT', 'SIGTERM'] as const
 /**
- *  When a 'SIGINT', 'SIGTERM' or 'SIGUSR2' exit signal is received,
- *  the provided shutdown callback will be called after the graceful period (ms)
+ *  When an exit signal is received, the provided shutdown
+ *  callback will be called after the graceful period (ms)
  */
 const addGracefulShutdownHook = (gracefulPeriodMs: number, gracefulShutdownCB: (...args: any[]) => void) => {
   const gracefulShutdownHook = () => {
@@ -63,7 +63,7 @@ const getHealthzHandler = (options: HealthHandlerOptions) => {
     })
   })
 
-  return (req: IncomingMessage, res: ServerResponse) => {
+  return (req: any, res: any) => {
     options.test = options.test ?? defaultTest
     return Promise.resolve(options.test())
       .then((result: boolean) => (result ? options.healthy(req, res) : options.notHealthy(req, res)))
