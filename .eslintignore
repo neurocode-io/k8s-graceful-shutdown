@@ -1,4 +1,4 @@
 node_modules/*
 dist/*
 demo/express-simple-app/node_modules/*
-demo/dist/node_modules/*
+demo/express-simple-app/dist/*
