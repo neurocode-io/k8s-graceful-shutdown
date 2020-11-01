@@ -6,3 +6,7 @@ dist
 package-lock.json
 .nyc_output
 coverage
+demos/express-simple-app/node_modules
+demos/express-simple-app/dist
+demos/express-simple-app/.DS_Store
+demos/express-simple-app/package-lock.json
