@@ -34,13 +34,13 @@ describe('get healthz handler', () => {
   })
 
   it('health check should return healthy for no test', async () => {
-    healthzCheck = getHealthRequestResponseHandler({ healthy: healthyCB, notHealthy: notHealthyCB })
+    healthzCheck = getHealthHandler({ healthy: healthyCB, notHealthy: notHealthyCB })
     await healthzCheck(req, res)
     assert.strictEqual(health, 'OK')
   })
 
   it('health check should return healthy for succeeding test', async () => {
-    healthzCheck = getHealthRequestResponseHandler({
+    healthzCheck = getHealthHandler({
       healthy: healthyCB,
       notHealthy: notHealthyCB,
       test: () => {
@@ -53,7 +53,7 @@ describe('get healthz handler', () => {
   it('health check should return healthy failing test', async () => {
     health = 'test'
 
-    healthzCheck = getHealthRequestResponseHandler({
+    healthzCheck = getHealthHandler({
       healthy: healthyCB,
       notHealthy: notHealthyCB,
       test: () => {
@@ -83,7 +83,7 @@ describe('exit signals test', async () => {
 
   signals.forEach((signal) => {
     it(`it should add graceful shutdown hook on exit signal: ${signal}`, (done) => {
-      healthzCheck = getHealthRequestResponseHandler({
+      healthzCheck = getHealthHandler({
         healthy: healthyCB,
         notHealthy: notHealthyCB,
         test: () => {
