@@ -2,7 +2,7 @@
   "name": "express-simple-app",
   "version": "0.1.0",
   "description": "simple express app demo",
-  "main": "dist/demos/express-simple-app/src/app.js",
+  "main": "dist/demos/koa-simple-app/src/app.js",
   "scripts": {
     "prewatch": "npx tsc",
     "watch-ts": "tsc -w",
@@ -10,9 +10,9 @@
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"yarn run watch-ts\" \"yarn run watch-node\""
   },
   "devDependencies": {
-    "@types/express": "^4.17.8",
+    "@types/koa": "^2.11.6",
     "concurrently": "^5.3.0",
-    "express": "^4.17.1",
+    "koa": "^2.13.0",
     "nodemon": "^2.0.6"
   },
   "dependencies": {

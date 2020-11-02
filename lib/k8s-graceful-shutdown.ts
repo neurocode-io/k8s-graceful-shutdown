@@ -1,20 +1,40 @@
 import { IncomingMessage, ServerResponse } from 'http'
+import { Http2ServerRequest, Http2ServerResponse } from 'http2'
 
-interface HealthHandlerOptions {
+interface HandlerOptions {
   /**
    * Health test callback
    * Returns true if test passes
    * Retuns false if test failes
    */
   test?: () => boolean | Promise<boolean>
+}
+interface RequestResponseHandlerOptions extends HandlerOptions {
   /**
    * Callback to be triggered if healthy
    */
-  healthy: (req: IncomingMessage, res: ServerResponse) => void | Promise<void>
+  healthy: (
+    req: IncomingMessage | Http2ServerRequest,
+    res: ServerResponse | Http2ServerResponse
+  ) => void | Promise<void>
   /**
    * Callback to be triggered if not heathy
    */
-  notHealthy: (req: IncomingMessage, res: ServerResponse) => void | Promise<void>
+  notHealthy: (
+    req: IncomingMessage | Http2ServerRequest,
+    res: ServerResponse | Http2ServerResponse
+  ) => void | Promise<void>
+}
+
+interface ContextHandlerOptions extends HandlerOptions {
+  /**
+   * Callback to be triggered if healthy
+   */
+  healthy: (context: any) => void | Promise<void>
+  /**
+   * Callback to be triggered if not heathy
+   */
+  notHealthy: (context: any) => void | Promise<void>
 }
 
 const defaultTest = () => true
@@ -50,25 +70,59 @@ const removeGracefulShutdownHook = (gracefulShutdownCB: (...args: any[]) => void
   })
 }
 /**
- * returns a health check function which:
+ * returns a health check fn(req, res) which:
  * 1) Calls the "healthy" callback if both the provided "test"
  * callback resolves to true, and no exit signals were received.
  * 2) Calls the "notHealthy" call back if either the provided "test"
  * callback resolves to false, or an exit signal was received.
  */
-const getHealthzHandler = (options: HealthHandlerOptions) => {
+const getHealthRequestResponseHandler = (options: RequestResponseHandlerOptions) => {
   signals.forEach((signal) => {
     process.on(signal, () => {
       options.test = () => false
     })
   })
 
-  return (req: any, res: any) => {
+  return (req: IncomingMessage | Http2ServerRequest, res: ServerResponse | Http2ServerResponse) => {
     options.test = options.test ?? defaultTest
     return Promise.resolve(options.test())
       .then((result: boolean) => (result ? options.healthy(req, res) : options.notHealthy(req, res)))
-      .catch(() => options.notHealthy(req, res))
+      .catch((e) => {
+        try {
+          options.notHealthy(req, res)
+        } catch {
+          console.error(e.message)
+        }
+      })
   }
 }
 
-export { addGracefulShutdownHook, removeGracefulShutdownHook, getHealthzHandler }
+/**
+ * returns a health check fn(ctx) which:
+ * 1) Calls the "healthy" callback if both the provided "test"
+ * callback resolves to true, and no exit signals were received.
+ * 2) Calls the "notHealthy" call back if either the provided "test"
+ * callback resolves to false, or an exit signal was received.
+ */
+const getHealthContextHandler = (options: ContextHandlerOptions) => {
+  signals.forEach((signal) => {
+    process.on(signal, () => {
+      options.test = () => false
+    })
+  })
+
+  return (context: any) => {
+    options.test = options.test ?? defaultTest
+    return Promise.resolve(options.test())
+      .then((result: boolean) => (result ? options.healthy(context) : options.notHealthy(context)))
+      .catch((e) => {
+        try {
+          options.notHealthy(context)
+        } catch {
+          console.error(e.message)
+        }
+      })
+  }
+}
+
+export { addGracefulShutdownHook, removeGracefulShutdownHook, getHealthRequestResponseHandler, getHealthContextHandler }

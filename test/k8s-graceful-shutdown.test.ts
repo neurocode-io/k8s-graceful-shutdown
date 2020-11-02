@@ -1,5 +1,9 @@
 import assert from 'assert'
-import { addGracefulShutdownHook, removeGracefulShutdownHook, getHealthzHandler } from '../lib/k8s-graceful-shutdown'
+import {
+  addGracefulShutdownHook,
+  removeGracefulShutdownHook,
+  getHealthRequestResponseHandler,
+} from '../lib/k8s-graceful-shutdown'
 import { setTimeout } from 'timers'
 import { IncomingMessage, ServerResponse } from 'http'
 import { Socket } from 'net'
@@ -8,7 +12,7 @@ let callbackCalled: boolean
 let health: string
 let healthzCheck: (req: IncomingMessage, res: ServerResponse) => Promise<void>
 
-const signals = ['SIGINT', 'SIGTERM', 'SIGUSR2'] as const
+const signals = ['SIGINT', 'SIGTERM'] as const
 const req = new IncomingMessage(new Socket())
 const res = new ServerResponse(req)
 
@@ -30,13 +34,13 @@ describe('get healthz handler', () => {
   })
 
   it('health check should return healthy for no test', async () => {
-    healthzCheck = getHealthzHandler({ healthy: healthyCB, notHealthy: notHealthyCB })
+    healthzCheck = getHealthRequestResponseHandler({ healthy: healthyCB, notHealthy: notHealthyCB })
     await healthzCheck(req, res)
     assert.strictEqual(health, 'OK')
   })
 
   it('health check should return healthy for succeeding test', async () => {
-    healthzCheck = getHealthzHandler({
+    healthzCheck = getHealthRequestResponseHandler({
       healthy: healthyCB,
       notHealthy: notHealthyCB,
       test: () => {
@@ -49,7 +53,7 @@ describe('get healthz handler', () => {
   it('health check should return healthy failing test', async () => {
     health = 'test'
 
-    healthzCheck = getHealthzHandler({
+    healthzCheck = getHealthRequestResponseHandler({
       healthy: healthyCB,
       notHealthy: notHealthyCB,
       test: () => {
@@ -79,7 +83,7 @@ describe('exit signals test', async () => {
 
   signals.forEach((signal) => {
     it(`it should add graceful shutdown hook on exit signal: ${signal}`, (done) => {
-      healthzCheck = getHealthzHandler({
+      healthzCheck = getHealthRequestResponseHandler({
         healthy: healthyCB,
         notHealthy: notHealthyCB,
         test: () => {
