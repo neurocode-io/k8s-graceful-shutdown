@@ -1,5 +1,5 @@
 {
-  "name": "@neurocode-io/k8s-graceful-shutdown",
+  "name": "@neurocode.io/k8s-graceful-shutdown",
   "version": "0.1.0",
   "main": "dist/lib/k8s-graceful-shutdown.js",
   "source": "lib/k8s-graceful-shutdown.ts",
