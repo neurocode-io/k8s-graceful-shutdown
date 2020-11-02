@@ -4,7 +4,7 @@ import { addGracefulShutdownHook, getHealthContextHandler } from '../../../lib/k
 
 const app = new Koa()
 const port = process.env.PORT || 3000
-const server = app.listen(port, () => console.log('App is running on http://localhost:%d', port))
+const server = app.listen(port, () => console.log(`App is running on http://localhost:${port}`))
 
 /*
  * Health Check Demo

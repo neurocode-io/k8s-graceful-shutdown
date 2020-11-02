@@ -1,10 +1,11 @@
 import { Response, Request } from 'express'
 import * as express from 'express'
-import { addGracefulShutdownHook, getHealthRequestResponseHandler } from '../../../lib/k8s-graceful-shutdown'
+import { addGracefulShutdownHook, getHealthHandler } from '../../../lib/k8s-graceful-shutdown'
 
 const app = express()
-app.set('port', process.env.PORT || 3000)
-const server = app.listen(app.get('port'), () => console.log('App is running on http://localhost:%d', app.get('port')))
+app.disable("x-powered-by")
+const port = process.env.PORT || 3000
+const server = app.listen(app.get('port'), () => console.log(`App is running on http://localhost:${port}`))
 
 /*
  * Health Check Demo
@@ -26,7 +27,7 @@ const test = () => {
   return y
 }
 
-const healthCheck = getHealthRequestResponseHandler({ healthy, notHealthy, test })
+const healthCheck = getHealthHandler({ healthy, notHealthy, test })
 app.get('/', healthCheck)
 
 /*

@@ -76,7 +76,7 @@ const removeGracefulShutdownHook = (gracefulShutdownCB: (...args: any[]) => void
  * 2) Calls the "notHealthy" call back if either the provided "test"
  * callback resolves to false, or an exit signal was received.
  */
-const getHealthRequestResponseHandler = (options: RequestResponseHandlerOptions) => {
+const getHealthHandler = (options: RequestResponseHandlerOptions) => {
   signals.forEach((signal) => {
     process.on(signal, () => {
       options.test = () => false
@@ -125,4 +125,4 @@ const getHealthContextHandler = (options: ContextHandlerOptions) => {
   }
 }
 
-export { addGracefulShutdownHook, removeGracefulShutdownHook, getHealthRequestResponseHandler, getHealthContextHandler }
+export { addGracefulShutdownHook, removeGracefulShutdownHook, getHealthHandler, getHealthContextHandler }

@@ -2,13 +2,12 @@
   "name": "@neurocode-io/k8s-graceful-shutdown",
   "version": "0.1.0",
   "main": "dist/lib/k8s-graceful-shutdown.js",
+  "source": "lib/k8s-graceful-shutdown.ts",
   "types": "dist/lib/k8s-graceful-shutdown.d.ts",
   "scripts": {
     "clean": "rm -rf dist/*",
-    "prepush": "npm run lint",
-    "lint": "eslint ./ -c .eslintrc.js --ext ts --cache --max-warnings 0",
-    "lint:fix": "eslint ./ -c .eslintrc.js --ext ts  --cache --fix",
     "pretest": "npx tsc",
+    "format": "prettier --write '**/*.{ts,js,css,json,md}'",
     "test": "mocha --config test/mocharc.yaml test/**/*.test.ts",
     "test:coverage": "nyc --reporter=lcov --reporter=text npm test"
   },
@@ -30,22 +29,17 @@
     "all": true
   },
   "devDependencies": {
-    "@types/node": "^14.11.1",
-    "@typescript-eslint/eslint-plugin": "^2.3.2",
-    "@typescript-eslint/parser": "^2.3.2",
     "@types/chai": "^4.2.5",
     "@types/mocha": "^8.0.3",
-    "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.4.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "husky": "^4.3.0",
-    "prettier": "^2.1.2",
-    "typescript": "^4.0.3",
-    "mocha": "^8.1.3",
-    "chai": "^4.2.0",
+    "@types/node": "^14.11.1",
     "@types/sinon": "^9.0.5",
+    "chai": "^4.2.0",
+    "husky": "^4.3.0",
+    "mocha": "^8.1.3",
+    "nyc": "^15.0.0-beta.0",
+    "prettier": "^2.1.2",
     "ts-node-dev": "^1.0.0-pre.44",
-    "nyc": "^15.0.0-beta.0"
+    "typescript": "^4.0.3"
   },
   "husky": {
     "hooks": {
@@ -55,8 +49,7 @@
   "prettier": {
     "semi": false,
     "singleQuote": true,
-    "printWidth": 120,
-    "trailingComma": "es5"
+    "printWidth": 120
   },
   "files": [
     "dist/"
@@ -80,10 +73,10 @@
     "in",
     "kubernetes"
   ],
-  "author": "NeuroCode",
-  "license": "Apache-2.0",
+  "author": "neurocode I/O GmbH <info@neurocode.io>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/NeuroCode-io/k8s-graceful-shutdown/issues"
   },
-  "homepage": "https://github.com/NeuroCode-io/k8s-graceful-shutdown#readme"
+  "homepage": "https://github.com/NeuroCode-io/k8s-graceful-shutdown/blob/master/README.md"
 }
