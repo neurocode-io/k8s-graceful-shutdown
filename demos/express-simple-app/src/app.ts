@@ -3,7 +3,7 @@ import * as express from 'express'
 import { addGracefulShutdownHook, getHealthHandler } from '../../../lib/k8s-graceful-shutdown'
 
 const app = express()
-app.disable("x-powered-by")
+app.disable('x-powered-by')
 const port = process.env.PORT || 3000
 const server = app.listen(app.get('port'), () => console.log(`App is running on http://localhost:${port}`))
 

@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rm -rf dist/*",
     "pretest": "npx tsc",
-    "format": "prettier --write '**/*.{ts,js,css,json,md}'",
+    "format": "prettier --write '{lib, test, demos}/*.{ts,js}'",
     "test": "mocha --config test/mocharc.yaml test/**/*.test.ts",
     "test:coverage": "nyc --reporter=lcov --reporter=text npm test"
   },
