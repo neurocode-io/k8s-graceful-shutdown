@@ -2,3 +2,5 @@ node_modules/*
 dist/*
 demos/express-simple-app/node_modules/*
 demos/express-simple-app/dist/*
+demos/koa-simple-app/node_modules/*
+demos/koa-simple-app/dist/*
