@@ -2,7 +2,7 @@ import assert from 'assert'
 import {
   addGracefulShutdownHook,
   removeGracefulShutdownHook,
-  getHealthRequestResponseHandler,
+  getHealthHandler,
 } from '../lib/k8s-graceful-shutdown'
 import { setTimeout } from 'timers'
 import { IncomingMessage, ServerResponse } from 'http'
