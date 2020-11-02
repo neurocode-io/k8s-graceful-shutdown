@@ -16,8 +16,8 @@ When developing microservices in kubernetes, especially NodeJS microservices. We
 emitted by kubernets. The proper way of doing this is to:
 
 1. Listen to SIGINT, SIGTERM
-2. Upon receiving a signal, place the service in unhealthy mode
-3. Add a grace period before shutting down to allow kubernetes load balancer to stop routing traffic to your service
+2. Upon receiving a signal, place the service in unhealthy mode (/health route should return a status code 4xx, 5xx)
+3. Add a grace period before shutting down to allow kubernetes to take your application off the loadbalancer
 4. Shutdown
 
 
