@@ -77,11 +77,12 @@ addGracefulShutdownHook(gracePeriodSec, closeServers)
 server.addListener('close', () => console.log('shutdown after graceful period'))
 ```
 
-* The simple app showed above, adds a graceful shutdown period of 5 seconds after which the hook, which takes care of closing the server with the help of our shutdown functionality, gets triggered. Upon sending a  SIGINT or SIGTERM signal, the user can see that a grace period of 5 seconds after which a waiting async operation of 3 seconds will take place, and only then the message 'shutdown after graceful period' indicating the closing of the server will be displayed.
+* The simple app showed above, adds a graceful shutdown period of 5 seconds after which the hook, which takes care of closing the server with the help of our shutdown functionality, gets triggered. Upon sending a  SIGINT or SIGTERM signal, the user can see that a grace period of 5 seconds after which a waiting async operation of 3 seconds takes place, and only then the message 'shutdown after graceful period' indicating the closing of the server will be displayed.
+
 * The app also showcases the functionality of the "getHealthHandler". Upon requesting localhost:3000/health, the healthTest will return true and the message 'everything is great' indicating a positive health check should be displayed. The user can change the healthTest to return false, and watch the message change into 'oh no, something bad happened!' indicating an unhealthy state.
 
 
-If you use the Koa framework check out the **demos/** folder. We have a Koa example with a similar functionality to the app showed above and which uses getHealthContextHandler with fn(ctx) hooks support.
+If you use the Koa framework check out the **demos/** folder. We have a Koa example with a similar functionality to the app showed above. The Koa app uses getHealthContextHandler with fn(ctx) support for the healthy and unHealthy handlers, instead of getHealthHandler which takes healthy and unHealthy handlers as fn(req, res).
 
 
 
