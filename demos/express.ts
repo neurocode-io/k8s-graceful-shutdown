@@ -22,7 +22,7 @@ const notHealthy = (req: Request, res: Response) => {
 let x = true
 
 // alternating result whenever page is requested
-const test = () => {
+const test = async () => {
   const y = x
   x = !x
   return y
@@ -44,7 +44,7 @@ const closeServers = async () => {
   server.close()
 }
 
-const gracePeriodSec = 5*1000
+const gracePeriodSec = 5 * 1000
 addGracefulShutdownHook(gracePeriodSec, closeServers)
 
 // removeGracefulShutdownHook(closeServers)

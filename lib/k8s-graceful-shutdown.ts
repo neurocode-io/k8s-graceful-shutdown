@@ -126,7 +126,7 @@ const getHealthContextHandler = (options: ContextHandlerOptions) => {
   }
 }
 
-function shutdown <T extends http.Server>(server: T) {
+function shutdown<T extends http.Server>(server: T) {
   const connections = new Map()
   const closeFn = server.close.bind(server)
 
@@ -146,6 +146,5 @@ function shutdown <T extends http.Server>(server: T) {
     return closeFn(callback)
   }
 }
-
 
 export { addGracefulShutdownHook, removeGracefulShutdownHook, getHealthHandler, getHealthContextHandler, shutdown }

@@ -28,11 +28,52 @@ Note that your grace period **must be** lower than the grace period defiend in k
 
 
 For example, using the Express framework:
+```ts
+import { Response, Request } from 'express'
+import express from 'express'
+import { addGracefulShutdownHook, getHealthHandler, shutdown } from '../lib/k8s-graceful-shutdown'
+
+const app = express()
+app.disable('x-powered-by')
+const port = process.env.PORT || 3000
+const server = app.listen(port, () => console.log(`App is running on http://localhost:${port}`))
+server.close = shutdown(server)
+
+const healthy = (req: Request, res: Response) => {
+  res.send('everything is great')
+}
+
+const notHealthy = (req: Request, res: Response) => {
+  res.status(503).send('oh no, something bad happened!')
+}
 
 
+const healthTest = async () => {
+  // this is optional
+  // you can use it to conduct healthChecks
+  return true
+}
+
+const healthCheck = getHealthHandler({ healthy, notHealthy, test: healthTest })
+app.get('/health', healthCheck)
+
+const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, time))
+
+const asyncOperation = async () => sleep(3000).then(() => console.log('Async op done'))
+
+const closeServers = async () => {
+  await asyncOperation() // can be any async operation such as mongo db close, or send a slack message ;)
+  server.close()
+}
+
+const gracePeriodSec = 5*1000
+addGracefulShutdownHook(gracePeriodSec, closeServers)
+
+server.addListener('close', () => console.log('shutdown after graceful period'))
+```
 
 
-Or using the Koa framework:
+If you use the Koa framework check out the **demos/** folder. We have an Koa example there as well.
 
 
 
