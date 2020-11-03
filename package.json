@@ -58,7 +58,7 @@
   "files": [
     "dist/"
   ],
-  "description": "![CI](https://github.com/NeuroCode-io/k8s-graceful-shutdown/workflows/CI/badge.svg?branch=master) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=alert_status)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=coverage)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=security_rating)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=NeuroCode-io_k8s-graceful-shutdown&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=NeuroCode-io_k8s-graceful-shutdown)",
+  "description": "Library for NodeJS applications running in kubernetes wanting to have zero downtime deployments",
   "directories": {
     "lib": "lib",
     "test": "test"
@@ -66,21 +66,19 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NeuroCode-io/k8s-graceful-shutdown.git"
+    "url": "git+https://github.com/nurocode-io/k8s-graceful-shutdown.git"
   },
   "keywords": [
-    "Graceful",
-    "shutdown",
-    "for",
+    "kubernetes",
+    "nodejs",
+    "zero downtime deployments",
     "microservices",
-    "running",
-    "in",
-    "kubernetes"
+    "graceful shutdown"
   ],
   "author": "neurocode I/O GmbH <info@neurocode.io>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/NeuroCode-io/k8s-graceful-shutdown/issues"
+    "url": "https://github.com/neurocode-io/k8s-graceful-shutdown/issues"
   },
-  "homepage": "https://github.com/NeuroCode-io/k8s-graceful-shutdown/blob/master/README.md"
+  "homepage": "https://github.com/neurocode-io/k8s-graceful-shutdown/blob/master/README.md"
 }
