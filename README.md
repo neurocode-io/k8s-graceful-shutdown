@@ -26,8 +26,10 @@ The library makes the process mentioned above easy. Just register your healthHan
 
 Note that your grace period **must be** lower than the grace period defiend in kubernetes!
 
+## Sample using the express framework
 
 For example, using the Express framework:
+
 ```ts
 import { Response, Request } from 'express'
 import express from 'express'
@@ -37,6 +39,9 @@ const app = express()
 app.disable('x-powered-by')
 const port = process.env.PORT || 3000
 const server = app.listen(port, () => console.log(`App is running on http://localhost:${port}`))
+
+// Patch NodeJS server close function with a proper close that works as you might expect closing keep-alive connections for you!
+// Read here for more info https://github.com/nodejs/node/issues/2642
 server.close = shutdown(server)
 
 const healthy = (req: Request, res: Response) => {
@@ -86,5 +91,5 @@ An example of how the fraceful shutdown workflow works:
 3. The library waits for the specified **grace time** to initiate the shutdown of the application. The grace time should be between 5-20 seconds. The grace time is needed for the kubernetes endpoint controller to remove the pod from the list of valid endpoints, in turn removing the pod from the Service (pod's ip address from iptables an ALL nodes).
 4. Kubernetes removes the Pod from the Service
 5. The library calls all your registered shutdown hooks
-6. After the configured grace period the application will properly shutdown using our shutdown mechanism that you probably (expected to work by default)[expected it to work by default] but does not in NodeJS http server, express and Koa
+6. After the configured grace period the application will properly shutdown using our shutdown mechanism that you probably [expected to work by default](https://github.com/nodejs/node/issues/2642) but does not in NodeJS http server, express and Koa
    
