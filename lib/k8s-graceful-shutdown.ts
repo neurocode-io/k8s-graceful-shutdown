@@ -1,4 +1,5 @@
-import { IncomingMessage, ServerResponse } from 'http'
+import http, { IncomingMessage, ServerResponse } from 'http'
+import https from 'https'
 import { Http2ServerRequest, Http2ServerResponse } from 'http2'
 
 interface HandlerOptions {
@@ -125,4 +126,25 @@ const getHealthContextHandler = (options: ContextHandlerOptions) => {
   }
 }
 
-export { addGracefulShutdownHook, removeGracefulShutdownHook, getHealthHandler, getHealthContextHandler }
+function shutdown<T extends http.Server>(server: T) {
+  const connections = new Map()
+  const closeFn = server.close.bind(server)
+
+  function onConnection(socket: any) {
+    connections.set(socket, 0)
+    socket.once('close', () => connections.delete(socket))
+  }
+
+  if (server instanceof https.Server) {
+    server.on('secureConnection', onConnection)
+  } else {
+    server.on('connection', onConnection)
+  }
+
+  return (callback?: (err: Error) => void) => {
+    connections.forEach((_, socket) => socket.destroy())
+    return closeFn(callback)
+  }
+}
+
+export { addGracefulShutdownHook, removeGracefulShutdownHook, getHealthHandler, getHealthContextHandler, shutdown }
