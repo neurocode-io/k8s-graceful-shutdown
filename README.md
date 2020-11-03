@@ -22,7 +22,7 @@ emitted by kubernets. The proper way of doing this is to:
 5. Shutdown
 
 
-The library makes the process mentioned above easy. Just register your healthHandler and add a grace period. 
+The library makes the process mentioned above easy. Just register your graceful shutdown hook and add a grace period. 
 
 Note that your grace period **must be** lower than the grace period defiend in kubernetes!
 
@@ -77,12 +77,12 @@ addGracefulShutdownHook(gracePeriodSec, closeServers)
 server.addListener('close', () => console.log('shutdown after graceful period'))
 ```
 
-* The simple app showed above, adds a graceful shutdown period of 5 seconds after which the hook, which takes care of closing the server with the help of our shutdown functionality, gets triggered. Upon sending a  SIGINT or SIGTERM signal, the user can see that a grace period of 5 seconds after which a waiting async operation of 3 seconds takes place, and only then the message 'shutdown after graceful period' indicating the closing of the server will be displayed.
+* The simple app shown above, adds a graceful shutdown period of 5 seconds after which the hook, which takes care of closing the server with the help of our shutdown functionality, gets triggered. Upon sending a  SIGINT or SIGTERM signal, the user can see that a grace period of 5 seconds after which a waiting async operation of 3 seconds takes place, and only then the message 'shutdown after graceful period' indicating the closing of the server will be displayed.
 
 * The app also showcases the functionality of the "getHealthHandler". Upon requesting localhost:3000/health, the healthTest will return true and the message 'everything is great' indicating a positive health check should be displayed. The user can change the healthTest to return false, and watch the message change into 'oh no, something bad happened!' indicating an unhealthy state.
 
 
-If you use the Koa framework check out the **demos/** folder. We have a Koa example with a similar functionality to the app showed above. The Koa app uses getHealthContextHandler with fn(ctx) support for the healthy and unHealthy handlers, instead of getHealthHandler which takes healthy and unHealthy handlers as fn(req, res).
+If you use the Koa framework check out the **demos/** folder. We have a Koa example with a similar functionality to the app shown above. The Koa app uses getHealthContextHandler with fn(ctx) support for the healthy and unHealthy handlers, instead of getHealthHandler which takes healthy and unHealthy handlers as fn(req, res).
 
 
 
