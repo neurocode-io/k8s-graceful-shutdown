@@ -1,10 +1,11 @@
 import { Context } from 'koa'
-import * as Koa from 'koa'
-import { addGracefulShutdownHook, getHealthContextHandler } from '../../../lib/k8s-graceful-shutdown'
+import Koa from 'koa'
+import { addGracefulShutdownHook, getHealthContextHandler, shutdown } from '../lib/k8s-graceful-shutdown'
 
 const app = new Koa()
 const port = process.env.PORT || 3000
 const server = app.listen(port, () => console.log(`App is running on http://localhost:${port}`))
+server.close = shutdown(server)
 
 /*
  * Health Check Demo
@@ -15,6 +16,7 @@ const healthy = (ctx: Context) => {
 
 const notHealthy = (ctx: Context) => {
   ctx.body = 'oh no, something bad happened!'
+  ctx.status = 503
 }
 
 let x = true
@@ -36,6 +38,7 @@ const closeServers = () => {
   server.close()
 }
 
-addGracefulShutdownHook(3000, closeServers)
+const gracePeriodSec = 5*1000
+addGracefulShutdownHook(gracePeriodSec, closeServers)
 // removeGracefulShutdownHook(closeServers)
 server.addListener('close', () => console.log('shutdown after graceful period'))
