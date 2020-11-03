@@ -33,7 +33,7 @@ For example, using the Express framework:
 ```ts
 import { Response, Request } from 'express'
 import express from 'express'
-import { addGracefulShutdownHook, getHealthHandler, shutdown } from '../lib/k8s-graceful-shutdown'
+import { addGracefulShutdownHook, getHealthHandler, shutdown } from '@neurocode.io/k8s-graceful-shutdown'
 
 const app = express()
 app.disable('x-powered-by')
@@ -77,8 +77,12 @@ addGracefulShutdownHook(gracePeriodSec, closeServers)
 server.addListener('close', () => console.log('shutdown after graceful period'))
 ```
 
+* The simple app showed above, adds a graceful shutdown period of 5 seconds after which the hook, which takes care of closing the server with the help of our shutdown functionality, gets triggered. Upon sending a  SIGINT or SIGTERM signal, the user can see that a grace period of 5 seconds after which a waiting async operation of 3 seconds takes place, and only then the message 'shutdown after graceful period' indicating the closing of the server will be displayed.
 
-If you use the Koa framework check out the **demos/** folder. We have an Koa example there as well.
+* The app also showcases the functionality of the "getHealthHandler". Upon requesting localhost:3000/health, the healthTest will return true and the message 'everything is great' indicating a positive health check should be displayed. The user can change the healthTest to return false, and watch the message change into 'oh no, something bad happened!' indicating an unhealthy state.
+
+
+If you use the Koa framework check out the **demos/** folder. We have a Koa example with a similar functionality to the app showed above. The Koa app uses getHealthContextHandler with fn(ctx) support for the healthy and unHealthy handlers, instead of getHealthHandler which takes healthy and unHealthy handlers as fn(req, res).
 
 
 
@@ -87,7 +91,7 @@ If you use the Koa framework check out the **demos/** folder. We have an Koa exa
 An example of how the fraceful shutdown workflow works:
 
 1. Kubernetes sends the Pod the SIGTERM signal. This happens when scaling down a Pod by hand or automatically during rolling deployments
-2. This library receives the SIGTERM signal and calls your unHealthHandler. You handler should return a 400 or 500 http status code (throw an error?) which will indicate that the pod shouldn't receive any traffic anymore. NOTE that this step is optional (check next step)
+2. This library receives the SIGTERM signal and calls your unHealthyHandler. You handler should return a 400 or 500 http status code (throw an error?) which will indicate that the pod shouldn't receive any traffic anymore. NOTE that this step is optional (check next step)
 3. The library waits for the specified **grace time** to initiate the shutdown of the application. The grace time should be between 5-20 seconds. The grace time is needed for the kubernetes endpoint controller to remove the pod from the list of valid endpoints, in turn removing the pod from the Service (pod's ip address from iptables an ALL nodes).
 4. Kubernetes removes the Pod from the Service
 5. The library calls all your registered shutdown hooks
