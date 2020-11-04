@@ -127,12 +127,11 @@ const getHealthContextHandler = (options: ContextHandlerOptions) => {
 }
 
 function shutdown<T extends http.Server>(server: T) {
-  const connections = new Map()
+  const connections = new Set()
   const closeFn = server.close.bind(server)
 
   function onConnection(socket: any) {
-    connections.set(socket, 0)
-    socket.once('close', () => connections.delete(socket))
+    connections.add(socket)
   }
 
   if (server instanceof https.Server) {
@@ -142,7 +141,7 @@ function shutdown<T extends http.Server>(server: T) {
   }
 
   return (callback?: (err: Error) => void) => {
-    connections.forEach((_, socket) => socket.destroy())
+    connections.forEach((socket: any) => socket.destroy())
     return closeFn(callback)
   }
 }
