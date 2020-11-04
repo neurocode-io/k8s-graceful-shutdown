@@ -1,6 +1,7 @@
 import http, { IncomingMessage, ServerResponse } from 'http'
 import https from 'https'
 import { Http2ServerRequest, Http2ServerResponse } from 'http2'
+import { Socket } from 'net'
 
 interface HandlerOptions {
   /**
@@ -127,10 +128,10 @@ const getHealthContextHandler = (options: ContextHandlerOptions) => {
 }
 
 function shutdown<T extends http.Server>(server: T) {
-  const connections = new Set()
+  const connections = new Set<Socket>()
   const closeFn = server.close.bind(server)
 
-  function onConnection(socket: any) {
+  function onConnection(socket: Socket) {
     connections.add(socket)
   }
 
@@ -141,7 +142,12 @@ function shutdown<T extends http.Server>(server: T) {
   }
 
   return (callback?: (err: Error) => void) => {
-    connections.forEach((socket: any) => socket.destroy())
+    connections.forEach((socket: Socket) => {
+      if (!socket.destroyed) {
+        socket.end()
+        socket.destroy()
+      }
+    })
     return closeFn(callback)
   }
 }
