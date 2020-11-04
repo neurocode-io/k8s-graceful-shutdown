@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8s-graceful-shutdown-demo
+  name: k8s-graceful-shutdown-demo
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: k8s-graceful-shutdown-demo
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: k8s-graceful-shutdown-demo
+    spec:
+      containers:
+      - name: k8s-graceful-shutdown-demo
+        image: donchev7/k8s-graceful-shutdown-demo:1
+        env:
+        - name: PORT
+          value: "8080"
+        ports:
+        - containerPort: 8080
+          name: http-port
+          protocol: TCP
+      terminationGracePeriodSeconds: 30
