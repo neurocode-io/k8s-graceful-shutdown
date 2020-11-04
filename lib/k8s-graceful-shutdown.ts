@@ -55,7 +55,7 @@ const addGracefulShutdownHook = (gracefulPeriodMs: number, gracefulShutdownCB: (
 
   hooks.set(gracefulShutdownCB, gracefulShutdownHook)
   signals.forEach((signal) => {
-    process.on(signal, gracefulShutdownHook)
+    process.once(signal, gracefulShutdownHook)
   })
 }
 /**
@@ -79,7 +79,7 @@ const removeGracefulShutdownHook = (gracefulShutdownCB: (...args: any[]) => void
  */
 const getHealthHandler = (options: RequestResponseHandlerOptions) => {
   signals.forEach((signal) => {
-    process.on(signal, () => {
+    process.once(signal, () => {
       options.test = () => false
     })
   })
@@ -107,7 +107,7 @@ const getHealthHandler = (options: RequestResponseHandlerOptions) => {
  */
 const getHealthContextHandler = (options: ContextHandlerOptions) => {
   signals.forEach((signal) => {
-    process.on(signal, () => {
+    process.once(signal, () => {
       options.test = () => false
     })
   })
