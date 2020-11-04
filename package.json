@@ -66,7 +66,7 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nurocode-io/k8s-graceful-shutdown.git"
+    "url": "git+https://github.com/neurocode-io/k8s-graceful-shutdown.git"
   },
   "keywords": [
     "kubernetes",
