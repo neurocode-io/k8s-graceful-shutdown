@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.5",
-    "@types/express": "^4.17.8",
+    "@types/express": "4.17.13",
     "@types/koa": "^2.11.6",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.3.3",
@@ -63,7 +63,6 @@
     "lib": "lib",
     "test": "test"
   },
-  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/neurocode-io/k8s-graceful-shutdown.git"

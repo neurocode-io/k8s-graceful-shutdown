@@ -2,6 +2,11 @@ import http, { IncomingMessage, ServerResponse } from 'http'
 import https from 'https'
 import { Http2ServerRequest, Http2ServerResponse } from 'http2'
 import { Socket } from 'net'
+import { Request, Response } from 'express'
+import { BaseRequest, BaseResponse } from 'koa'
+
+type ReqType = IncomingMessage | Http2ServerRequest | Request | BaseRequest
+type ResType = ServerResponse | Http2ServerResponse | Response | BaseResponse
 
 interface HandlerOptions {
   /**
@@ -15,17 +20,11 @@ interface RequestResponseHandlerOptions extends HandlerOptions {
   /**
    * Callback to be triggered if healthy
    */
-  healthy: (
-    req: IncomingMessage | Http2ServerRequest,
-    res: ServerResponse | Http2ServerResponse
-  ) => void | Promise<void>
+  healthy: (req: ReqType, res: ResType) => void | Promise<void>
   /**
    * Callback to be triggered if not heathy
    */
-  notHealthy: (
-    req: IncomingMessage | Http2ServerRequest,
-    res: ServerResponse | Http2ServerResponse
-  ) => void | Promise<void>
+  notHealthy: (req: ReqType, res: ResType) => void | Promise<void>
 }
 
 interface ContextHandlerOptions extends HandlerOptions {
