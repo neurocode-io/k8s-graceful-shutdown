@@ -14,7 +14,7 @@ interface HandlerOptions {
    * Returns true if test passes
    * Retuns false if test failes
    */
-  test?: () => boolean | Promise<boolean>
+  test?: (req?: ReqType) => boolean | Promise<boolean>
 }
 interface RequestResponseHandlerOptions extends HandlerOptions {
   /**
