@@ -75,15 +75,9 @@ const removeGracefulShutdownHook = (gracefulShutdownCB: (...args: any[]) => void
  * 1) Calls the "healthy" callback if both the provided "test"
  * callback resolves to true, and no exit signals were received.
  * 2) Calls the "notHealthy" call back if either the provided "test"
- * callback resolves to false, or an exit signal was received.
+ * callback resolves to false.
  */
 const getHealthHandler = (options: RequestResponseHandlerOptions) => {
-  signals.forEach((signal) => {
-    process.once(signal, () => {
-      options.test = () => false
-    })
-  })
-
   return (req: IncomingMessage | Http2ServerRequest, res: ServerResponse | Http2ServerResponse) => {
     options.test = options.test ?? defaultTest
     return Promise.resolve(options.test())
@@ -103,15 +97,9 @@ const getHealthHandler = (options: RequestResponseHandlerOptions) => {
  * 1) Calls the "healthy" callback if both the provided "test"
  * callback resolves to true, and no exit signals were received.
  * 2) Calls the "notHealthy" call back if either the provided "test"
- * callback resolves to false, or an exit signal was received.
+ * callback resolves to false.
  */
 const getHealthContextHandler = (options: ContextHandlerOptions) => {
-  signals.forEach((signal) => {
-    process.once(signal, () => {
-      options.test = () => false
-    })
-  })
-
   return (context: any) => {
     options.test = options.test ?? defaultTest
     return Promise.resolve(options.test())
